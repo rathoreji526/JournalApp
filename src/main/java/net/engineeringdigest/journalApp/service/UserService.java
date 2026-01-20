@@ -3,6 +3,7 @@ package net.engineeringdigest.journalApp.service;
 import net.engineeringdigest.journalApp.DTO.UserCredentialsDTO;
 import net.engineeringdigest.journalApp.DTO.UpdatePasswordDTO;
 import net.engineeringdigest.journalApp.DTO.UserDTO;
+import net.engineeringdigest.journalApp.enums.RoleEnum;
 import net.engineeringdigest.journalApp.exceptions.*;
 import net.engineeringdigest.journalApp.model.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -32,7 +34,7 @@ public class UserService {
             if(userDTO.getPhone()!=null){
                 user.setPhone(userDTO.getPhone());
             }
-//            user.getRoles().add("user");
+            user.setRoles(List.of(RoleEnum.USER.name()));
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);

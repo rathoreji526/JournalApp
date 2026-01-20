@@ -37,6 +37,5 @@ public class User {
     private LocalDateTime updatedAt;
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
-    @DBRef
     private List<String> roles = new ArrayList<>();
 }

@@ -32,9 +32,7 @@ public class JournalEntryService {
                                     JournalEntryDTO journalEntryDTO){
         String username = userDetails.getUsername();
 
-        if(!username.equals(userDetails.getUsername())){
-            throw new AccessDeniedException("You are not allowed to modify this user's data");
-        }
+
         User user = userService.findByUsername(username);
         String title = journalEntryDTO.getTitle();
         for(JournalEntry entry : user.getJournalEntries()){
@@ -109,6 +107,7 @@ public class JournalEntryService {
 
     public String deleteEntryByTitle(UserDetails userDetails, String title){
         String username = userDetails.getUsername();
+        User user = userService.findByUsername(username);
 
         List<ObjectId> ids = userService.findByUsername(username).getJournalEntries()
                 .stream()
@@ -120,6 +119,7 @@ public class JournalEntryService {
 
 
         journalEntryRepository.deleteByTitle(title);
+        userService.userRepository.pullJournalEntryFromUser(user.getEmail() , journalEntry.getId());
         return "Entry deleted successfully.";
     }
 
