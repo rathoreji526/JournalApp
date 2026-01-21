@@ -34,7 +34,7 @@ public class UserService {
             if(userDTO.getPhone()!=null){
                 user.setPhone(userDTO.getPhone());
             }
-            user.setRoles(List.of(RoleEnum.USER.name()));
+            user.setRoles(List.of(RoleEnum.ROLE_USER.name()));
             user.setCreatedAt(LocalDateTime.now());
             user.setUpdatedAt(LocalDateTime.now());
             userRepository.save(user);
@@ -89,6 +89,5 @@ public class UserService {
     public User getUserByEmail(String email){
         return userRepository.findByEmail(email);
     }
-
 
 }

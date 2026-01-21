@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.DTO.EmailAndOTPDTO;
 import net.engineeringdigest.journalApp.DTO.EmailDTO;
 import net.engineeringdigest.journalApp.DTO.SignUpDTO;
+import net.engineeringdigest.journalApp.exceptions.InvalidEmailException;
 import net.engineeringdigest.journalApp.service.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,18 @@ public class SignUpController {
 
     @PostMapping("/otpRequest")
     public ResponseEntity<String> otpRequest(@RequestBody EmailDTO dto){
-        signUpService.sendSignUpMail(dto);
-        return new ResponseEntity<>("OTP sent to your email." , HttpStatus.OK);
+        try{
+            signUpService.sendSignUpMail(dto);
+            return new ResponseEntity<>("OTP sent to your email." , HttpStatus.OK);
+        }catch (InvalidEmailException e){
+            return new ResponseEntity<>(e.getMessage() , HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/verifyOTP")
     public ResponseEntity<String > verifyOTP(@RequestBody EmailAndOTPDTO dto){
         try{
-            log.info("\notp is {}\n",dto.getOTP());
+//            log.info("\notp is {}\n",dto.getOTP());
             String response = signUpService.verifyOTP(dto);
             return new ResponseEntity<>(response , HttpStatus.OK);
         }catch (Exception e){

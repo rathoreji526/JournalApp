@@ -4,6 +4,7 @@ import net.engineeringdigest.journalApp.DTO.EmailAndOTPDTO;
 import net.engineeringdigest.journalApp.DTO.EmailDTO;
 import net.engineeringdigest.journalApp.DTO.SignUpDTO;
 import net.engineeringdigest.journalApp.DTO.UserDTO;
+import net.engineeringdigest.journalApp.enums.OTPPurposeEnum;
 import net.engineeringdigest.journalApp.model.Role;
 import net.engineeringdigest.journalApp.model.User;
 import net.engineeringdigest.journalApp.security.JwtUtil;
@@ -31,7 +32,7 @@ public class SignUpService {
     //user will enter his signup details/first verify user's email(email) => generate username of user  => enter user's information
 
     public void sendSignUpMail(EmailDTO dto){
-        String otp = otpService.generateOTP(dto.getEmail());
+        String otp = otpService.generateOTP(dto.getEmail(), OTPPurposeEnum.SIGNUP.name());
         emailService.sendEmail( dto.getEmail(),"Your OTP for Journal App Sign-Up" , "Hello "+ dto.getEmail()+
                 "\n" +
                 "Thank you for signing up for Journal App.\n" +
@@ -47,7 +48,7 @@ public class SignUpService {
 
     //verify password and return a signup token so user can enter his/her details and register to our platform ** token will valid only for 10 minutes!
     public String verifyOTP(EmailAndOTPDTO dto){
-        otpService.verifyOTP(dto.getEmail() , dto.getOTP());
+        otpService.verifyOTP(dto.getEmail() , dto.getOTP() , OTPPurposeEnum.SIGNUP.name());
         return "OTP verified\n\n"+jwtUtil.generateSignUpToken(dto.getEmail());
     }
 

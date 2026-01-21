@@ -49,14 +49,6 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256,secretPassword)
                 .compact();
 
-//        String jwtToken = Jwts
-//                .builder()
-//                .setExpiration(new Date(System.currentTimeMillis()+expirationTime))
-//                .setIssuedAt(new Date())
-//                .signWith(SignatureAlgorithm.HS256,secretPassword)
-//                .setClaims(claims)
-//                .compact();
-        log.info("\njwt token created {}\n",jwtToken);
         return jwtToken;
     }
 
@@ -103,7 +95,7 @@ public class JwtUtil {
         return true;
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void print(){
 
         String username = "kamal_kumar";

@@ -8,10 +8,10 @@ import net.engineeringdigest.journalApp.exceptions.NullContentException;
 import net.engineeringdigest.journalApp.exceptions.ResourceNotFoundException;
 import net.engineeringdigest.journalApp.model.JournalEntry;
 import net.engineeringdigest.journalApp.service.JournalEntryService;
-import net.engineeringdigest.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +25,7 @@ public class JournalEntryController {
     JournalEntryService journalEntryService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> saveJournalEntry(@RequestBody JournalEntryDTO journalEntryDTO,
                                                    @AuthenticationPrincipal UserDetails userDetails){
         try{
@@ -38,17 +39,20 @@ public class JournalEntryController {
     }
 
     @GetMapping("/findByTitle")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<JournalEntry> findByTitle(@RequestParam String title,
                                                     @AuthenticationPrincipal UserDetails userDetails){
         return new ResponseEntity<>(journalEntryService.findEntryByTitle(userDetails , title) , HttpStatus.OK);
     }
 
     @GetMapping("/findAll")
+    @PreAuthorize("hasRole('USER')")
     public List<JournalEntry> findAll(@AuthenticationPrincipal UserDetails userDetails){
         return journalEntryService.findAll(userDetails);
     }
 
     @PatchMapping("/updateContent")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> updateContentByTitle(
                                       @RequestBody UpdateJournalDTO dto,
                                       @AuthenticationPrincipal UserDetails userDetails){
@@ -71,9 +75,16 @@ public class JournalEntryController {
     }
 
     @DeleteMapping("/deleteByTitle")
+    @PreAuthorize("hasRole('USER')")
     public String deleteByTitle(@RequestParam String title,
                                 @AuthenticationPrincipal UserDetails userDetails){
         String response = journalEntryService.deleteEntryByTitle( userDetails , title);
         return response;
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/test")
+    public String testPreAuth(){
+        return "Success";
     }
 }

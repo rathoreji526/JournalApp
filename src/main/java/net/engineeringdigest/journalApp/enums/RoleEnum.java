@@ -1,6 +1,6 @@
 package net.engineeringdigest.journalApp.enums;
 
 public enum RoleEnum {
-    USER,
-    ADMIN
+    ROLE_USER,
+    ROLE_ADMIN
 }

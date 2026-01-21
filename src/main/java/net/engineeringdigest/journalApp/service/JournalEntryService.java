@@ -52,10 +52,6 @@ public class JournalEntryService {
                                          String title){
         String username = userDetails.getUsername();
 
-        if(!username.equals(userDetails.getUsername())){
-            throw new AccessDeniedException("You are not allowed to perform this action!");
-        }
-
         List<ObjectId> ids = userService.findByUsername(username)
                 .getJournalEntries()
                 .stream()
@@ -73,6 +69,7 @@ public class JournalEntryService {
 
         return userService.findByUsername(username).getJournalEntries();
     }
+
 
     public void updateContentByTitle(UserDetails userDetails,
                                      UpdateJournalDTO dto){
@@ -115,7 +112,7 @@ public class JournalEntryService {
                 .orElseThrow(()->new NotFoundException("Entry not found with title: "+title));
 
 
-        journalEntryRepository.deleteByTitle(title);
+        journalEntryRepository.deleteById(journalEntry.getId());
         userService.userRepository.pullJournalEntryFromUser(user.getEmail() , journalEntry.getId());
         return "Entry deleted successfully.";
     }
