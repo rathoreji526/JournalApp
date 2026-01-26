@@ -10,12 +10,15 @@ import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.customUserDetails.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -58,14 +61,22 @@ public class JwtFilter extends OncePerRequestFilter {
         Claims claims = jwtUtil.decryptToken(jwtToken);
 
         String username = claims.get("username",String.class);
+        List<String> roles = claims.get("roles" , List.class);
+        List<SimpleGrantedAuthority> authorities = roles
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
 
-//        log.info("\n\nprinting claims: {}",
-//                claims.toString());
+        log.info("\n\nprinting claims: {}",
+                claims.toString());
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails , null , new ArrayList<>());
+                new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        authorities);
 
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 

@@ -25,7 +25,11 @@ public class UserLoginService {
         if(!CommonUtilities.matches(password , user.getPassword())){
             throw new WrongPasswordException("Password you entered is incorrect");
         }
-        String jwtToken  = jwtUtil.generateJwtToken(user.getUsername(),user.getEmail() , user.getPhone() , user.getRoles());
+        String jwtToken  = jwtUtil.generateJwtToken(
+                user.getUsername(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRoles());
         return jwtToken;
     }
 
